@@ -1,6 +1,6 @@
 SEED = ARGV[0] || Random.new_seed
 MAX = 115792089237316195423570985008687907852837564279074904382605163141518161494336
-
+BASE = 16
 gen = Random.new(SEED.to_i)
 
-puts gen.rand(MAX).to_s(16)
+puts gen.rand(MAX).to_s(BASE)
