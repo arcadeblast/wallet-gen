@@ -1,5 +1,5 @@
 **wallet-gen** is a lightweight Dogecoin wallet generator.
 
 ```
-usage: ruby wallet-gen [seed]
+usage: ruby wallet-gen.rb [seed]
 ```
