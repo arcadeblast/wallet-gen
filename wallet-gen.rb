@@ -19,13 +19,8 @@ def hash160_to_address(hex)
 end
 
 def encode_address(hex, version)
-  hex = version + hex
-  encode_base58(hex + checksum(hex))
-end
-
-def encode_base58(hex)
-  leading_zero_bytes  = (hex.match(/^([0]+)/) ? $1 : '').size / 2
-  ('1' * leading_zero_bytes) + int_to_base58( hex.to_i(16) )
+  address_byte_string = version + hex + checksum(hex)
+  base58_check(address_byte_string.to_i(16))
 end
 
 def checksum(hex)
@@ -33,11 +28,11 @@ def checksum(hex)
   Digest::SHA256.hexdigest( Digest::SHA256.digest(b) )[0...8]
 end
 
-def int_to_base58(int_val, leading_zero_bytes=0)
-  alpha = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
-  base58_val, base = '', alpha.size
-  while int_val > 0
-    int_val, remainder = int_val.divmod(base)
+def base58_check(address_byte_string)
+  alpha = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+  base58_val = ''
+  while address_byte_string > 0
+    address_byte_string, remainder = address_byte_string.divmod(58)
     base58_val = alpha[remainder] + base58_val
   end
   base58_val
