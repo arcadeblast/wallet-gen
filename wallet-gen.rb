@@ -1,13 +1,12 @@
 require 'ecdsa'
 
-MAX = 115792089237316195423570985008687907852837564279074904382605163141518161494336
-HEX = 16
+PRIVATE_KEY_MAX = 115792089237316195423570985008687907852837564279074904382605163141518161494336
 DOGECOIN_MAIN_NET_PREFIX = '1e'
 
 def gen_private_key(seed)
   seed = seed || Random.new_seed
   r = Random.new(seed.to_i)
-  r.rand(MAX).to_s(HEX)
+  r.rand(PRIVATE_KEY_MAX).to_s(16)
 end
 
 def hash160(hex)
@@ -15,8 +14,9 @@ def hash160(hex)
   Digest::RMD160.hexdigest(Digest::SHA256.digest(bytes))
 end
 
-def hash160_to_address(version, hex)
-  base58_check(version + hex + checksum(hex))
+def public_key_to_address(net_prefix, public_key)
+  hex = hash160(public_key)
+  base58_check(net_prefix + hex + checksum(hex))
 end
 
 def checksum(hex)
@@ -38,7 +38,7 @@ end
 private_key = gen_private_key(ARGV[0])
 
 group = ECDSA::Group::Secp256k1
-point = group.generator.multiply_by_scalar(private_key.to_i(HEX))
+point = group.generator.multiply_by_scalar(private_key.to_i(16))
 public_key = ECDSA::Format::PointOctetString.encode(point, compression: true).unpack('H*').first
 
 puts 'Private Key:'
@@ -46,4 +46,4 @@ puts private_key
 puts 'Public Key:'
 puts public_key
 puts 'Public Address:'
-puts hash160_to_address(DOGECOIN_MAIN_NET_PREFIX, hash160(public_key))
+puts public_key_to_address(DOGECOIN_MAIN_NET_PREFIX, public_key)
