@@ -2,6 +2,7 @@ require 'ecdsa'
 
 MAX = 115792089237316195423570985008687907852837564279074904382605163141518161494336
 HEX = 16
+DOGECOIN_MAIN_NET_PREFIX = '1e'
 
 def gen_private_key(seed)
   seed = seed || Random.new_seed
@@ -11,16 +12,11 @@ end
 
 def hash160(hex)
   bytes = [hex].pack("H*")
-  Digest::RMD160.hexdigest Digest::SHA256.digest(bytes)
+  Digest::RMD160.hexdigest(Digest::SHA256.digest(bytes))
 end
 
-def hash160_to_address(hex)
-  encode_address hex, '1e'
-end
-
-def encode_address(hex, version)
-  address_byte_string = version + hex + checksum(hex)
-  base58_check(address_byte_string.to_i(16))
+def hash160_to_address(version, hex)
+  base58_check(version + hex + checksum(hex))
 end
 
 def checksum(hex)
@@ -29,13 +25,14 @@ def checksum(hex)
 end
 
 def base58_check(address_byte_string)
+  addr_base10 = address_byte_string.to_i(16)
   alpha = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
-  base58_val = ''
-  while address_byte_string > 0
-    address_byte_string, remainder = address_byte_string.divmod(58)
-    base58_val = alpha[remainder] + base58_val
+  result = ''
+  while addr_base10 > 0
+    addr_base10, remainder = addr_base10.divmod(58)
+    result = alpha[remainder] + result
   end
-  base58_val
+  result
 end
 
 private_key = gen_private_key(ARGV[0])
@@ -49,4 +46,4 @@ puts private_key
 puts 'Public Key:'
 puts public_key
 puts 'Public Address:'
-puts hash160_to_address(hash160(public_key))
+puts hash160_to_address(DOGECOIN_MAIN_NET_PREFIX, hash160(public_key))
