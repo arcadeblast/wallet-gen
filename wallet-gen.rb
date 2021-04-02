@@ -15,8 +15,11 @@ def hash160(hex)
 end
 
 def public_key_to_address(net_prefix, public_key)
-  hex = hash160(public_key)
-  base58_check(net_prefix + hex + checksum(hex))
+  address_byte_string = ''
+  address_byte_string += net_prefix
+  address_byte_string += hash160(public_key)
+  address_byte_string += checksum(address_byte_string)
+  base58_check(address_byte_string)
 end
 
 def checksum(hex)
@@ -41,9 +44,11 @@ group = ECDSA::Group::Secp256k1
 point = group.generator.multiply_by_scalar(private_key.to_i(16))
 public_key = ECDSA::Format::PointOctetString.encode(point, compression: true).unpack('H*').first
 
+public_address = public_key_to_address(DOGECOIN_MAIN_NET_PREFIX, public_key)#public_key_to_address(DOGECOIN_MAIN_NET_PREFIX, public_key)
+
 puts 'Private Key:'
 puts private_key
 puts 'Public Key:'
 puts public_key
 puts 'Public Address:'
-puts public_key_to_address(DOGECOIN_MAIN_NET_PREFIX, public_key)
+puts public_address
