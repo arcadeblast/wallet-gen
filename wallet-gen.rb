@@ -4,7 +4,10 @@ PRIVATE_KEY_MAX = 11579208923731619542357098500868790785283756427907490438260516
 DOGECOIN_MAIN_NET_PREFIX = '1e'
 
 def gen_private_key(seed)
-  seed = seed || Random.new_seed
+  unless seed
+    seed = Random.new_seed
+    puts 'Warning: Using non-secure seed to generate private key.'
+  end
   r = Random.new(seed.to_i)
   r.rand(PRIVATE_KEY_MAX).to_s(16)
 end
