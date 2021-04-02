@@ -1,4 +1,5 @@
 require 'ecdsa'
+require 'rqrcode'
 
 PRIVATE_KEY_MAX = 115792089237316195423570985008687907852837564279074904382605163141518161494336
 DOGECOIN_MAIN_NET_PREFIX = '1e'
@@ -53,3 +54,10 @@ puts 'Private Key:'
 puts private_key
 puts 'Public Address:'
 puts public_address
+
+qrcode = RQRCode::QRCode.new(public_address)
+
+# NOTE: showing with default options specified explicitly
+png = qrcode.as_png
+
+IO.binwrite("/tmp/github-qrcode.png", png.to_s)

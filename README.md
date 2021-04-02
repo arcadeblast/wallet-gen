@@ -16,6 +16,8 @@ usage: ruby wallet-gen.rb [seed]
 
 [ruby_ecdsa](https://github.com/DavidEGrayson/ruby_ecdsa)
 
+[rqrcode](https://github.com/whomwah/rqrcode)
+
 #### Tip
 
 DMdhaHDoPTgeWSZgu2zFz6ogEtiCWvyLTT
