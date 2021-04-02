@@ -48,7 +48,5 @@ public_address = public_key_to_address(DOGECOIN_MAIN_NET_PREFIX, public_key)#pub
 
 puts 'Private Key:'
 puts private_key
-puts 'Public Key:'
-puts public_key
 puts 'Public Address:'
 puts public_address
