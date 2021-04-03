@@ -1,17 +1,10 @@
 require 'ecdsa'
 require 'rqrcode'
 
+require_relative 'private_key_gen'
+
 PRIVATE_KEY_MAX = 115792089237316195423570985008687907852837564279074904382605163141518161494336
 DOGECOIN_MAIN_NET_PREFIX = '1e'
-
-def gen_private_key(seed)
-  unless seed
-    seed = Random.new_seed
-    puts 'Warning: Using non-secure seed to generate private key.'
-  end
-  r = Random.new(seed.to_i)
-  r.rand(PRIVATE_KEY_MAX).to_s(16)
-end
 
 def hash160(hex)
   bytes = [hex].pack("H*")
@@ -42,7 +35,7 @@ def base58_check(address_byte_string)
   result
 end
 
-private_key = gen_private_key(ARGV[0])
+private_key = PrivateKeyGen.generate(ARGV[0])
 
 group = ECDSA::Group::Secp256k1
 point = group.generator.multiply_by_scalar(private_key.to_i(16))
@@ -57,7 +50,4 @@ puts public_address
 
 qrcode = RQRCode::QRCode.new(public_address)
 
-# NOTE: showing with default options specified explicitly
-png = qrcode.as_png
-
-IO.binwrite("/tmp/github-qrcode.png", png.to_s)
+IO.binwrite("public_address.png", qrcode.as_png.to_s)
