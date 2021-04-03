@@ -12,13 +12,13 @@ module PublicAddressGen
   private
 
   def hash160(hex)
-    bytes = [hex].pack("H*")
+    bytes = [hex].pack('H*')
     Digest::RMD160.hexdigest(Digest::SHA256.digest(bytes))
   end
 
   def checksum(hex)
-    b = [hex].pack("H*") # unpack hex
-    Digest::SHA256.hexdigest( Digest::SHA256.digest(b) )[0...8]
+    bytes = [hex].pack('H*') # unpack hex
+    Digest::SHA256.hexdigest( Digest::SHA256.digest(bytes) )[0...8]
   end
 
   def base58_check(address_byte_string)
