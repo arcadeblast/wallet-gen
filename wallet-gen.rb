@@ -2,6 +2,7 @@ require 'ecdsa'
 require 'rqrcode'
 
 require_relative 'private_key_gen'
+require_relative 'public_key_gen'
 
 DOGECOIN_MAIN_NET_PREFIX = '1e'
 
@@ -36,15 +37,13 @@ end
 
 seed = nil
 if ARGV[0]
-  seed = ARGV[0]
+  seed = Integer(ARGV[0])
 else
   puts 'Warning: Relying on operating system to generate seed for private key. This may be unsecured.'
 end
 private_key = PrivateKeyGen.generate(seed)
 
-group = ECDSA::Group::Secp256k1
-point = group.generator.multiply_by_scalar(private_key.to_i(16))
-public_key = ECDSA::Format::PointOctetString.encode(point, compression: true).unpack('H*').first
+public_key = PublicKeyGen.generate(private_key)
 
 public_address = public_key_to_address(DOGECOIN_MAIN_NET_PREFIX, public_key)#public_key_to_address(DOGECOIN_MAIN_NET_PREFIX, public_key)
 
@@ -55,4 +54,4 @@ puts public_address
 
 qrcode = RQRCode::QRCode.new(public_address)
 
-IO.binwrite("public_address.png", qrcode.as_png.to_s)
+IO.binwrite("qr_public_address_#{public_address}.png", qrcode.as_png.to_s)
