@@ -3,7 +3,6 @@ require 'rqrcode'
 
 require_relative 'private_key_gen'
 
-PRIVATE_KEY_MAX = 115792089237316195423570985008687907852837564279074904382605163141518161494336
 DOGECOIN_MAIN_NET_PREFIX = '1e'
 
 def hash160(hex)
@@ -35,7 +34,13 @@ def base58_check(address_byte_string)
   result
 end
 
-private_key = PrivateKeyGen.generate(ARGV[0])
+seed = nil
+if ARGV[0]
+  seed = ARGV[0]
+else
+  puts 'Warning: Relying on operating system to generate seed for private key. This may be unsecured.'
+end
+private_key = PrivateKeyGen.generate(seed)
 
 group = ECDSA::Group::Secp256k1
 point = group.generator.multiply_by_scalar(private_key.to_i(16))
