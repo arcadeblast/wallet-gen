@@ -23,6 +23,7 @@ module PublicAddressGen
 
   def base58_check(address_byte_string)
     addr_base10 = address_byte_string.to_i(16)
+    # Characters like l, I, 0, and O are excluded from Base58Check on purpose to avoid confusion and user error.
     alpha = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
     result = ''
     while addr_base10 > 0
