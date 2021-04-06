@@ -4,6 +4,7 @@ require 'rqrcode'
 require_relative 'private_key_gen'
 require_relative 'public_key_gen'
 require_relative 'public_address_gen'
+require_relative 'qr_gen'
 
 DOGECOIN_MAIN_NET_PREFIX = '1e'
 
@@ -23,8 +24,6 @@ puts private_key
 puts 'Public Address:'
 puts public_address
 
-qrcode = RQRCode::QRCode.new(public_address)
 destination = "qr_public_address_#{public_address}.png"
-IO.binwrite(destination, qrcode.as_png.to_s)
-
+QRGen.write(QRGen.generate(public_address), destination)
 puts "Created public address QR code at #{destination}."
